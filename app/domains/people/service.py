@@ -6,11 +6,22 @@ class PeopleService:
     def __init__(self, client: ExternalApiClient):
         self.client = client
 
-    def list_people(
-        self,
-        params: Optional[Dict[str, Any]] = None
-    ) -> Dict[str, Any]:
-        return self.client.get("people", params)
+    def list_people(self, params: Optional[Dict[str, Any]] = None):
 
-    def get_person_by_id(self, person_id: int) -> Dict[str, Any]:
-        return self.client.get(f"people/{person_id}")
+        response = self.client.get(
+            "people",
+            params=params
+        )
+
+        results = response.get("results", [])
+
+        page_size = 10
+        start = 0
+        end = page_size
+
+        return {
+            "page": params.get('page', 1),
+            "page_size": page_size,
+            "total": response.get("count"),
+            "results": results[start:end]
+        }
