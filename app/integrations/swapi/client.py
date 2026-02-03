@@ -1,6 +1,24 @@
 import requests
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, Tuple
+from functools import lru_cache
 
+@lru_cache(maxsize=128)
+def cached_get(
+    base_url: str,
+    endpoint: str,
+    params: Tuple[Tuple[str, Any], ...],
+    timeout: int
+) -> Dict[str, Any]:
+    url = f"{base_url}/{endpoint.strip('/')}/"
+
+    response = requests.get(
+        url,
+        params=dict(params),
+        timeout=timeout
+    )
+
+    response.raise_for_status()
+    return response.json()
 
 class ExternalApiClient:
     def __init__(self, base_url: str, timeout: int = 10):
@@ -10,21 +28,18 @@ class ExternalApiClient:
     def get(
         self,
         endpoint: str,
-        params: Optional[Dict[str, Any]] = None
+        params: Dict[str, Any] | None = None
     ) -> Dict[str, Any]:
-        url = f"{self.base_url}/{endpoint.lstrip('/')}"
+
+        params_tuple = tuple(sorted(params.items())) if params else ()
 
         try:
-            response = requests.get(
-                url,
-                params=params,
-                timeout=self.timeout
+            return cached_get(
+                self.base_url,
+                endpoint,
+                params_tuple,
+                self.timeout
             )
-            response.raise_for_status()
-            return response.json()
-
-        except requests.exceptions.Timeout:
-            raise RuntimeError("Timeout ao acessar serviço externo")
 
         except requests.exceptions.HTTPError as exc:
             raise RuntimeError(

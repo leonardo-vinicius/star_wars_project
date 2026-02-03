@@ -17,10 +17,12 @@ def get_people_service() -> PeopleService:
 
 @router.get("/")
 def list_people(
-    page: int = Query(1, ge=1, description="Página da SWAPI"),
+    page: int = 1,
+    page_size: int = 10,
+    name: Optional[str] = None,
     service: PeopleService = Depends(get_people_service)
 ):
-    return service.list_people({"page": page})
+    return service.list_people(page, page_size, name)
 
 
 @router.get("/{person_id}")
