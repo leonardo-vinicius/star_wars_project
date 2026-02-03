@@ -28,9 +28,11 @@ def list_films(
     page: int = Query(1, ge=1, description="Número da página"),
     page_size: int = Query(10, ge=1, le=100, description="Itens por página"),
     title: Optional[str] = Query(None, description="Filtrar por título do filme"),
+    director: Optional[str] = Query(None, description="Filtrar por diretor"),
+    release_year: Optional[int] = Query(None, description="Filtrar por ano de lançamento"),
     service: FilmsService = Depends(get_films_service)
 ):
-    return service.list_films(page, page_size, title)
+    return service.list_films(page, page_size, title, director, release_year)
 
 
 @router.get("/episode-order", response_model=List[FilmResponse])

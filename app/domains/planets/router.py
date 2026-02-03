@@ -28,9 +28,12 @@ def list_planets(
     page: int = Query(1, ge=1, description="Número da página"),
     page_size: int = Query(10, ge=1, le=100, description="Itens por página"),
     name: Optional[str] = Query(None, description="Filtrar por nome do planeta"),
+    climate: Optional[str] = Query(None, description="Filtrar por clima"),
+    terrain: Optional[str] = Query(None, description="Filtrar por terreno"),
+    population_min: Optional[int] = Query(None, description="População mínima"),
     service: PlanetsService = Depends(get_planets_service)
 ):
-    return service.list_planets(page, page_size, name)
+    return service.list_planets(page, page_size, name, climate, terrain, population_min)
 
 
 @router.get("/search/climate", response_model=List[PlanetResponse])

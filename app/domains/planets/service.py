@@ -19,8 +19,12 @@ class PlanetsService:
         self,
         page: int = 1,
         page_size: int = 10,
-        name: Optional[str] = None
+        name: Optional[str] = None,
+        climate: Optional[str] = None,
+        terrain: Optional[str] = None,
+        population_min: Optional[int] = None
     ) -> PaginatedPlanetsResponse:
+        """Lista todos os planetas com paginação e filtros opcionais"""
         
         swapi_params = {"page": page}
 
@@ -30,13 +34,32 @@ class PlanetsService:
         response = self.client.get("planets", params=swapi_params)
         results = response.get("results", [])
 
+        if climate:
+            results = [
+                planet for planet in results
+                if climate.lower() in planet.get("climate", "").lower()
+            ]
+        
+        if terrain:
+            results = [
+                planet for planet in results
+                if terrain.lower() in planet.get("terrain", "").lower()
+            ]
+        
+        if population_min is not None:
+            results = [
+                planet for planet in results
+                if planet.get("population", "unknown").isdigit() 
+                and int(planet.get("population")) >= population_min
+            ]
+
         start = 0
         end = page_size
 
         return PaginatedPlanetsResponse(
             page=page,
             page_size=page_size,
-            total=response.get("count", 0),
+            total=len(results),
             results=results[start:end]
         )
 

@@ -24,9 +24,11 @@ def list_people(
     page: int = Query(1, ge=1, description="Número da página"),
     page_size: int = Query(10, ge=1, le=100, description="Itens por página"),
     name: Optional[str] = Query(None, description="Filtrar por nome"),
+    gender: Optional[str] = Query(None, description="Filtrar por gênero (male, female, n/a)"),
+    birth_year: Optional[str] = Query(None, description="Filtrar por ano de nascimento"),
     service: PeopleService = Depends(get_people_service)
 ):
-    return service.list_people(page, page_size, name)
+    return service.list_people(page, page_size, name, gender, birth_year)
 
 
 @router.get("/{person_id}", response_model=PersonResponse)

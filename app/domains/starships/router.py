@@ -25,11 +25,12 @@ def get_starships_service() -> StarshipsService:
 def list_starships(
     page: int = Query(1, ge=1, description="Número da página"),
     page_size: int = Query(10, ge=1, le=100, description="Itens por página"),
+    starship_class: Optional[str] = Query(None, description="Filtrar por classe (ex: Star Destroyer)"),
+    manufacturer: Optional[str] = Query(None, description="Filtrar por fabricante"),
     name: Optional[str] = Query(None, description="Filtrar por nome da nave"),
     service: StarshipsService = Depends(get_starships_service)
 ):
-    return service.list_starships(page, page_size, name)
-
+    return service.list_starships(page, page_size, name, starship_class, manufacturer)
 
 @router.get("/{starship_id}", response_model=StarshipResponse)
 def get_starship_by_id(

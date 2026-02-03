@@ -17,7 +17,9 @@ class StarshipsService:
         self,
         page: int = 1,
         page_size: int = 10,
-        name: Optional[str] = None
+        name: Optional[str] = None,
+        starship_class: Optional[str] = None,
+        manufacturer: Optional[str] = None
     ) -> PaginatedStarshipsResponse:
         
         swapi_params = {"page": page}
@@ -27,6 +29,18 @@ class StarshipsService:
 
         response = self.client.get("starships", params=swapi_params)
         results = response.get("results", [])
+
+        if starship_class:
+            results = [
+                starship for starship in results
+                if starship_class.lower() in starship.get("starship_class", "").lower()
+            ]
+
+        if manufacturer:
+            results = [
+                starship for starship in results
+                if manufacturer.lower() in starship.get("manufacturer", "").lower()
+            ]
 
         start = 0
         end = page_size

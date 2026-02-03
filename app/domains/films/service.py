@@ -19,7 +19,9 @@ class FilmsService:
         self,
         page: int = 1,
         page_size: int = 10,
-        title: Optional[str] = None
+        title: Optional[str] = None,
+        director: Optional[str] = None,
+        release_year: Optional[int] = None
     ) -> PaginatedFilmsResponse:
         
         swapi_params = {"page": page}
@@ -30,13 +32,25 @@ class FilmsService:
         response = self.client.get("films", params=swapi_params)
         results = response.get("results", [])
 
+        if director:
+            results = [
+                film for film in results
+                if director.lower() in film.get("director", "").lower()
+            ]
+        
+        if release_year:
+            results = [
+                film for film in results
+                if str(release_year) in film.get("release_date", "")
+            ]
+
         start = 0
         end = page_size
 
         return PaginatedFilmsResponse(
             page=page,
             page_size=page_size,
-            total=response.get("count", 0),
+            total=len(results),
             results=results[start:end]
         )
 

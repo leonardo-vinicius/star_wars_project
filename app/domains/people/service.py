@@ -15,9 +15,10 @@ class PeopleService:
         self,
         page: int = 1,
         page_size: int = 10,
-        name: Optional[str] = None
+        name: Optional[str] = None,
+        gender: Optional[str] = None,
+        birth_year: Optional[str] = None
     ) -> PaginatedPeopleResponse:
-        
         swapi_params = {"page": page}
 
         if name:
@@ -25,6 +26,11 @@ class PeopleService:
 
         response = self.client.get("people", params=swapi_params)
         results = response.get("results", [])
+
+        if gender:
+            results = [p for p in results if p.get("gender", "").lower() == gender.lower()]
+        if birth_year:
+            results = [p for p in results if birth_year in p.get("birth_year", "")]
 
         start = 0
         end = page_size
