@@ -1,6 +1,10 @@
 from typing import Dict, Any, Optional, List
 from integrations.swapi.client import ExternalApiClient
-from fastapi import HTTPException
+from domains.people.models import (
+    PaginatedPeopleResponse,
+    PersonResponse,
+    PersonFilmResponse
+)
 
 
 class PeopleService:
@@ -12,9 +16,8 @@ class PeopleService:
         page: int = 1,
         page_size: int = 10,
         name: Optional[str] = None
-    ) -> Dict[str, Any]:
-
-
+    ) -> PaginatedPeopleResponse:
+        
         swapi_params = {"page": page}
 
         if name:
@@ -26,16 +29,14 @@ class PeopleService:
         start = 0
         end = page_size
 
-        return {
-            "page": page,
-            "page_size": page_size,
-            "total": response.get("count"),
-            "results": results[start:end]
-        }
-    
-    def get_person_by_id(self, person_id: int) -> Dict[str, Any]:
-        try:
-            response = self.client.get(f"people/{person_id}")
-            return response
-        except Exception as e:
-            raise HTTPException(status_code=404, detail=f"Personagem {person_id} não encontrado")
+        return PaginatedPeopleResponse(
+            page=page,
+            page_size=page_size,
+            total=response.get("count", 0),
+            results=results[start:end]
+        )
+
+    def get_person_by_id(self, person_id: int) -> PersonResponse:
+        response = self.client.get(f"people/{person_id}")
+        
+        return PersonResponse(**response)
