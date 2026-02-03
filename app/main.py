@@ -1,5 +1,8 @@
 from fastapi import FastAPI
-from domains.people.routes import router as people_router
+from domains.people.router import router as people_router
+from domains.starships.router import router as starship_router
+from domains.films.router import router as films_router
+from domains.planets.router import router as planets_router
 
 
 app = FastAPI(
@@ -9,6 +12,9 @@ app = FastAPI(
 )
 
 app.include_router(people_router)
+app.include_router(starship_router)
+app.include_router(films_router)
+app.include_router(planets_router)
 
 @app.get("/health")
 def health_check():
