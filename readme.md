@@ -1,4 +1,4 @@
-# 🌌 Star Wars API – Desafio Técnico PowerOfData
+# 🌌 Star Wars API – Desafio Técnico
 
 ## 📖 Visão Geral
 
