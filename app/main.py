@@ -6,6 +6,7 @@ from domains.people.router import router as people_router
 from domains.starships.router import router as starships_router
 from domains.films.router import router as films_router
 from domains.planets.router import router as planets_router
+from domains.auth.router import router as auth_router
 
 app = FastAPI(
     title="Star Wars API",
@@ -31,6 +32,7 @@ app.include_router(people_router)
 app.include_router(starships_router)
 app.include_router(films_router)
 app.include_router(planets_router)
+app.include_router(auth_router)
 
 
 @app.get("/")

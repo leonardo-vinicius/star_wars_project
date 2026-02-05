@@ -34,4 +34,3 @@ def get_db() -> Generator[Session, None, None]:
 
 def init_db():
     Base.metadata.create_all(bind=engine)
-    print("Banco de dados inicializado")

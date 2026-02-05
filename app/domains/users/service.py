@@ -35,7 +35,12 @@ class UsersService:
         )
 
     def create_user(self, data: UserCreate) -> UserResponse:
-        existing_user = self.db.query(User).filter(User.email == data.email).first()
+        existing_user = (
+            self.db.query(User)
+            .filter(User.email == data.email)
+            .first()
+        )
+
         if existing_user:
             raise EmailAlreadyExistsError("E-mail já cadastrado")
 
@@ -43,7 +48,9 @@ class UsersService:
             email=data.email,
             name=data.name,
             user_class=data.user_class,
-            hashed_password=self._hash_password(data.password)
+            hashed_password=self._hash_password(data.password),
+            birth_date=data.birth_date,
+            created_at=datetime.utcnow()
         )
 
         try:
@@ -57,30 +64,42 @@ class UsersService:
         return self._to_response(db_user)
 
     def authenticate(self, email: str, password: str) -> User:
-        user = self.db.query(User).filter(User.email == email).first()
-        
+        user = (
+            self.db.query(User)
+            .filter(User.email == email)
+            .first()
+        )
+
         if not user:
             raise InvalidCredentialsError("Credenciais inválidas")
-        
+
         if not self._verify_password(password, user.hashed_password):
             raise InvalidCredentialsError("Credenciais inválidas")
-        
+
         return user
 
     def get_user_by_id(self, user_id: int) -> UserResponse:
-        user = self.db.query(User).filter(User.id == user_id).first()
-        
+        user = (
+            self.db.query(User)
+            .filter(User.id == user_id)
+            .first()
+        )
+
         if not user:
             raise UserNotFoundError("Usuário não encontrado")
-        
+
         return self._to_response(user)
 
     def get_user_by_email(self, email: str) -> Optional[UserResponse]:
-        user = self.db.query(User).filter(User.email == email).first()
-        
+        user = (
+            self.db.query(User)
+            .filter(User.email == email)
+            .first()
+        )
+
         if not user:
             return None
-        
+
         return self._to_response(user)
 
     def list_users(
@@ -89,25 +108,32 @@ class UsersService:
         limit: int = 100,
         user_class: Optional[str] = None
     ) -> List[UserResponse]:
+
         query = self.db.query(User)
-        
+
         if user_class:
             query = query.filter(User.user_class == user_class)
-        
+
         users = query.offset(skip).limit(limit).all()
-        
+
         return [self._to_response(user) for user in users]
 
     def update_user(self, user_id: int, data: UserUpdate) -> UserResponse:
-        user = self.db.query(User).filter(User.id == user_id).first()
-        
+        user = (
+            self.db.query(User)
+            .filter(User.id == user_id)
+            .first()
+        )
+
         if not user:
             raise UserNotFoundError("Usuário não encontrado")
 
         update_data = data.dict(exclude_unset=True)
 
         if "password" in update_data:
-            user.hashed_password = self._hash_password(update_data.pop("password"))
+            user.hashed_password = self._hash_password(
+                update_data.pop("password")
+            )
 
         for field, value in update_data.items():
             setattr(user, field, value)
@@ -122,8 +148,12 @@ class UsersService:
         return self._to_response(user)
 
     def delete_user(self, user_id: int) -> None:
-        user = self.db.query(User).filter(User.id == user_id).first()
-        
+        user = (
+            self.db.query(User)
+            .filter(User.id == user_id)
+            .first()
+        )
+
         if not user:
             raise UserNotFoundError("Usuário não encontrado")
 
