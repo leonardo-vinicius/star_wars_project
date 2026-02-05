@@ -104,13 +104,62 @@ Todos os endpoints podem ser explorados via Swagger:
 
 👉 `/docs`
 
-### Exemplos
+---
+### 🎯 Abordagem orientada a perguntas
 
-* `GET /people` — lista personagens
-* `GET /people?name=luke` — filtro por nome
-* `GET /films` — lista filmes
-* `GET /films/{id}/characters` — personagens de um filme específico
-* `GET /planets?climate=arid` — filtro por clima
+Um dos diferenciais do projeto foi **estruturar os endpoints para responder perguntas reais que um usuário faria**, abstraindo a complexidade da SWAPI.
+
+Exemplos de perguntas atendidas pela API:
+
+- *Quais personagens existem no universo Star Wars?*
+- *Quais personagens aparecem em determinado filme?*
+- *Quais planetas possuem determinado clima?*
+- *Quais filmes fazem parte da saga e quais personagens participam deles?*
+
+### 👤 Personagens (`/people`)
+
+- `GET /people` — lista personagens
+- `GET /people?name=luke` — filtro por nome
+- `GET /people?gender=male` — filtro por gênero
+- `GET /people?birth_date=41.9BBY` — filtro por ano de nascimento
+
+**Diferencial:**
+- Normalização de dados vindos da SWAPI
+- Filtros combináveis
+- Resolução de relacionamentos (planeta de origem, filmes)
+
+### 🌍 Planetas (`/planets`)
+
+- `GET /planets` — lista planetas
+- `GET /planets?climate=arid` — filtro por clima
+- `GET /planets?terrain=desert` — filtro por terreno
+- `GET /planets?terrain=desert` — compara dois ou mais planetas através de seus ids
+
+**Diferencial:**
+- Facilita perguntas como *“quais planetas são desérticos?”*
+
+### 🚀 Naves (`/starships`)
+
+- `GET /starships` — lista naves
+- `GET /starships?starship_class=Star Destroyer` — filtro por classe
+- `GET /starships?manufacturer=Corellian` — filtro por fabricante
+
+**Diferencial:**
+- Conversão de valores textuais da SWAPI para tipos comparáveis
+- Permite ordenação e comparação entre naves
+
+### 🎬 Filmes (`/films`)
+
+- `GET /films` — lista filmes
+- `GET /films/episode-order` — lista a ordem de filmes
+- `GET /films/{id}` — detalhes de um filme
+- `GET /films/{id}/characters` — personagens presentes no filme
+- `GET /films/{id}/starships` — naves presentes no filme
+- `GET /films/{id}/planets` — planetas presentes no filme
+
+**Diferencial:**
+- Endpoint correlacionado que responde diretamente à pergunta:
+  *“Quais personagens participam deste filme?”*
 
 ---
 
