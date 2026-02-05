@@ -1,5 +1,26 @@
+from fastapi import FastAPI
 from functions_framework import http
+from fastapi.middleware.wsgi import WSGIMiddleware
+from domains.users.router import router as users_router
+from domains.auth.router import router as auth_router
+from domains.people.router import router as people_router
+from domains.starships.router import router as starships_router
+from domains.films.router import router as films_router
+from domains.planets.router import router as planets_router
+
+app = FastAPI(title="Star Wars API")
+
+app.include_router(users_router)
+app.include_router(people_router)
+app.include_router(auth_router)
+app.include_router(starships_router)
+app.include_router(films_router)
+app.include_router(planets_router)
+
+@app.get("/")
+def health():
+    return {"status": "ok"}
 
 @http
 def starwars_api(request):
-    return {"status": "ok"}
+    return WSGIMiddleware(app)(request)
