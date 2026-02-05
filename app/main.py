@@ -1,6 +1,4 @@
 from fastapi import FastAPI
-from functions_framework import http
-from fastapi.middleware.wsgi import WSGIMiddleware
 from domains.users.router import router as users_router
 from domains.auth.router import router as auth_router
 from domains.people.router import router as people_router
@@ -16,11 +14,3 @@ app.include_router(auth_router)
 app.include_router(starships_router)
 app.include_router(films_router)
 app.include_router(planets_router)
-
-@app.get("/")
-def health():
-    return {"status": "ok"}
-
-@http
-def starwars_api(request):
-    return WSGIMiddleware(app)(request)
