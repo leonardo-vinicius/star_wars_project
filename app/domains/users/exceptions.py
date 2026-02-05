@@ -1,11 +1,11 @@
-class UsersDomainError(Exception):
-    pass
+# class UsersDomainError(Exception):
+#     pass
 
-class UserNotFoundError(UsersDomainError):
-    pass
+# class UserNotFoundError(UsersDomainError):
+#     pass
 
-class EmailAlreadyExistsError(UsersDomainError):
-    pass
+# class EmailAlreadyExistsError(UsersDomainError):
+#     pass
 
-class InvalidCredentialsError(UsersDomainError):
-    pass
+# class InvalidCredentialsError(UsersDomainError):
+#     pass

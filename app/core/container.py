@@ -1,5 +1,5 @@
-from domains.users.service import UsersService
-from domains.auth.service import AuthService
+# from domains.users.service import UsersService
+# from domains.auth.service import AuthService
 
-users_service = UsersService()
-auth_service = AuthService(users_service)
+# users_service = UsersService()
+# auth_service = AuthService(users_service)
