@@ -34,7 +34,7 @@ def root():
     return {
         "message": "Star Wars API on GCP",
         "docs": "/docs",
-        "github": "https://github.com/SEU-USUARIO/SEU-REPO"
+        "github": "https://github.com/leonardo-vinicius/star_wars_project.git"
     }
 
 handler = Mangum(app)
