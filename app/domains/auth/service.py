@@ -1,7 +1,5 @@
 from domains.users.service import UsersService
 from core.security import create_access_token
-from domains.users.exceptions import InvalidCredentialsError
-
 
 class AuthService:
 

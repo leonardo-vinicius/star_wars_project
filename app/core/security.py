@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 from jose import jwt
-from env import ENV_SECRET_KEY
+from .config import ENV_SECRET_KEY
 
 SECRET_KEY = ENV_SECRET_KEY
 ALGORITHM = "HS256"

@@ -1,14 +1,9 @@
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, Request, HTTPException
 from pydantic import BaseModel, EmailStr
 
-from domains.auth.service import AuthService
-from domains.users.service import UsersService
 from domains.users.exceptions import InvalidCredentialsError
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
-
-users_service = UsersService()
-auth_service = AuthService(users_service)
 
 
 class LoginRequest(BaseModel):
@@ -17,7 +12,8 @@ class LoginRequest(BaseModel):
 
 
 @router.post("/login")
-def login(data: LoginRequest):
+def login(request: Request, data: LoginRequest):
+    auth_service = request.app.state.auth_service
     try:
         token = auth_service.login(data.email, data.password)
         return {"access_token": token, "token_type": "bearer"}
